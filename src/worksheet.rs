@@ -5857,7 +5857,7 @@ impl Worksheet {
         col: ColNum,
         note: &Note,
     ) -> Result<&mut Worksheet, XlsxError> {
-        self.insert_note_with_offset(row, col, note, None, None)?;
+        self.insert_note_with_offset(row, col, note, 0, 0)?;
         Ok(self)
     }
 
