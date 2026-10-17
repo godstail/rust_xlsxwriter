@@ -80,8 +80,8 @@ pub struct Note {
     width: f64,
     row: Option<RowNum>,
     col: Option<ColNum>,
-    x_offset: Option<u32>,
-    y_offset: Option<u32>,
+    pub(crate) x_offset: Option<u32>,
+    pub(crate) y_offset: Option<u32>,
 
     pub(crate) author: Option<String>,
     pub(crate) author_id: usize,
