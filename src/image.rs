@@ -60,8 +60,8 @@ pub struct Image {
     scale_width: f64,
     scale_height: f64,
     has_default_dpi: bool,
-    pub(crate) x_offset: u32,
-    pub(crate) y_offset: u32,
+    pub(crate) x_offset: i32,
+    pub(crate) y_offset: i32,
     pub(crate) image_type: XlsxImageType,
     pub(crate) name: String,
     pub(crate) alt_text: String,
@@ -1131,11 +1131,11 @@ impl Image {
 
 // Trait for objects that have a component stored in the drawing.xml file.
 impl DrawingObject for Image {
-    fn x_offset(&self) -> u32 {
+    fn x_offset(&self) -> i32 {
         self.x_offset
     }
 
-    fn y_offset(&self) -> u32 {
+    fn y_offset(&self) -> i32 {
         self.y_offset
     }
 

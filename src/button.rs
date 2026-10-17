@@ -73,8 +73,8 @@ use crate::ObjectMovement;
 pub struct Button {
     height: f64,
     width: f64,
-    pub(crate) x_offset: u32,
-    pub(crate) y_offset: u32,
+    pub(crate) x_offset: i32,
+    pub(crate) y_offset: i32,
     pub(crate) name: String,
     pub(crate) macro_name: String,
     pub(crate) alt_text: String,
@@ -319,11 +319,11 @@ impl Button {
 
 // Trait for objects that have a component stored in the drawing.xml file.
 impl DrawingObject for Button {
-    fn x_offset(&self) -> u32 {
+    fn x_offset(&self) -> i32 {
         self.x_offset
     }
 
-    fn y_offset(&self) -> u32 {
+    fn y_offset(&self) -> i32 {
         self.y_offset
     }
 

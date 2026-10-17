@@ -813,8 +813,8 @@ pub(crate) const UNPARSED_SHEET_RANGE: &str = "UNPARSED_SHEET_RANGE";
 pub struct Chart {
     pub(crate) id: u32,
     pub(crate) writer: Cursor<Vec<u8>>,
-    pub(crate) x_offset: u32,
-    pub(crate) y_offset: u32,
+    pub(crate) x_offset: i32,
+    pub(crate) y_offset: i32,
     pub(crate) name: String,
     pub(crate) alt_text: String,
     pub(crate) object_movement: ObjectMovement,
@@ -6626,11 +6626,11 @@ impl IntoChartFormat for &mut ChartGradientFill {
 
 // Trait for objects that have a component stored in the drawing.xml file.
 impl DrawingObject for Chart {
-    fn x_offset(&self) -> u32 {
+    fn x_offset(&self) -> i32 {
         self.x_offset
     }
 
-    fn y_offset(&self) -> u32 {
+    fn y_offset(&self) -> i32 {
         self.y_offset
     }
 

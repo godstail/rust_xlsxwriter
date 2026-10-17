@@ -81,8 +81,8 @@ use crate::{Color, Formula, ObjectMovement, Url, XlsxError};
 pub struct Shape {
     height: f64,
     width: f64,
-    pub(crate) x_offset: u32,
-    pub(crate) y_offset: u32,
+    pub(crate) x_offset: i32,
+    pub(crate) y_offset: i32,
     pub(crate) text: String,
     pub(crate) text_link: Option<Formula>,
     pub(crate) alt_text: String,
@@ -3214,11 +3214,11 @@ pub enum ShapeGradientFillType {
 
 // Trait for objects that have a component stored in the drawing.xml file.
 impl DrawingObject for Shape {
-    fn x_offset(&self) -> u32 {
+    fn x_offset(&self) -> i32 {
         self.x_offset
     }
 
-    fn y_offset(&self) -> u32 {
+    fn y_offset(&self) -> i32 {
         self.y_offset
     }
 

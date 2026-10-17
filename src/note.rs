@@ -80,9 +80,8 @@ pub struct Note {
     width: f64,
     row: Option<RowNum>,
     col: Option<ColNum>,
-    pub(crate) x_offset: Option<u32>,
-    pub(crate) y_offset: Option<u32>,
-
+    pub(crate) x_offset: Option<i32>,
+    pub(crate) y_offset: Option<i32>,
     pub(crate) author: Option<String>,
     pub(crate) author_id: usize,
     pub(crate) has_author_prefix: bool,
@@ -687,7 +686,7 @@ impl Note {
 // Trait for objects that have a component stored in the drawing.xml file.
 impl DrawingObject for Note {
     #[allow(clippy::if_same_then_else)]
-    fn x_offset(&self) -> u32 {
+    fn x_offset(&self) -> i32 {
         match self.x_offset {
             Some(offset) => offset,
             None => {
@@ -705,7 +704,7 @@ impl DrawingObject for Note {
     }
 
     #[allow(clippy::if_same_then_else)]
-    fn y_offset(&self) -> u32 {
+    fn y_offset(&self) -> i32 {
         match self.y_offset {
             Some(offset) => offset,
             None => {

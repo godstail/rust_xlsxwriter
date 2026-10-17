@@ -1303,8 +1303,8 @@ pub(crate) enum DrawingType {
 
 // Trait for object such as Images and Charts that translate to a Drawing object.
 pub(crate) trait DrawingObject {
-    fn x_offset(&self) -> u32;
-    fn y_offset(&self) -> u32;
+    fn x_offset(&self) -> i32;
+    fn y_offset(&self) -> i32;
     fn width_scaled(&self) -> f64;
     fn height_scaled(&self) -> f64;
     fn object_movement(&self) -> ObjectMovement;

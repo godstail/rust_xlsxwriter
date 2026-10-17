@@ -1504,16 +1504,16 @@ pub struct Worksheet {
     pub(crate) dxf_formats: Vec<Format>,
     pub(crate) has_vml: bool,
     pub(crate) has_hyperlink_style: bool,
-    pub(crate) images: BTreeMap<(RowNum, ColNum, u32, u32), Image>,
+    pub(crate) images: BTreeMap<(RowNum, ColNum, i32, i32), Image>,
     pub(crate) buttons_vml_info: Vec<VmlInfo>,
     pub(crate) comments_vml_info: Vec<VmlInfo>,
     pub(crate) drawing: Drawing,
     pub(crate) image_types: [bool; NUM_IMAGE_FORMATS],
     pub(crate) header_footer_images: [Option<Image>; 6],
-    pub(crate) charts: BTreeMap<(RowNum, ColNum, u32, u32), Chart>,
-    pub(crate) buttons: BTreeMap<(RowNum, ColNum, u32, u32), Button>,
+    pub(crate) charts: BTreeMap<(RowNum, ColNum, i32, i32), Chart>,
+    pub(crate) buttons: BTreeMap<(RowNum, ColNum, i32, i32), Button>,
     pub(crate) notes: BTreeMap<RowNum, BTreeMap<ColNum, Note>>,
-    pub(crate) shapes: BTreeMap<(RowNum, ColNum, u32, u32), Shape>,
+    pub(crate) shapes: BTreeMap<(RowNum, ColNum, i32, i32), Shape>,
     pub(crate) tables: Vec<Table>,
     pub(crate) has_embedded_image_descriptions: bool,
     pub(crate) embedded_images: Vec<Image>,
@@ -5195,8 +5195,8 @@ impl Worksheet {
         row: RowNum,
         col: ColNum,
         image: &Image,
-        x_offset: u32,
-        y_offset: u32,
+        x_offset: i32,
+        y_offset: i32,
     ) -> Result<&mut Worksheet, XlsxError> {
         // Check row and columns are in the allowed range.
         if !self.check_dimensions_only(row, col) {
@@ -5531,9 +5531,9 @@ impl Worksheet {
         let image_height = image.scaled_height().round() as u32;
 
         if image_height == row_height {
-            x_offset = (column_width - image_width) / 2;
+            x_offset = ((column_width - image_width) / 2) as i32;
         } else {
-            y_offset = (row_height - image_height) / 2;
+            y_offset = ((row_height - image_height) / 2) as i32;
         }
 
         image.x_offset = x_offset;
@@ -5739,8 +5739,8 @@ impl Worksheet {
         row: RowNum,
         col: ColNum,
         chart: &Chart,
-        x_offset: u32,
-        y_offset: u32,
+        x_offset: i32,
+        y_offset: i32,
     ) -> Result<&mut Worksheet, XlsxError> {
         // Check row and columns are in the allowed range.
         if !self.check_dimensions_only(row, col) {
@@ -5886,8 +5886,8 @@ impl Worksheet {
         row: RowNum,
         col: ColNum,
         note: &Note,
-        x_offset: u32,
-        y_offset: u32,
+        x_offset: i32,
+        y_offset: i32,
     ) -> Result<&mut Worksheet, XlsxError> {
         // Check row and columns are in the allowed range.
         if !self.check_dimensions(row, col) {
@@ -6062,8 +6062,8 @@ impl Worksheet {
         row: RowNum,
         col: ColNum,
         shape: &Shape,
-        x_offset: u32,
-        y_offset: u32,
+        x_offset: i32,
+        y_offset: i32,
     ) -> Result<&mut Worksheet, XlsxError> {
         // Check row and columns are in the allowed range.
         if !self.check_dimensions_only(row, col) {
@@ -6302,8 +6302,8 @@ impl Worksheet {
         row: RowNum,
         col: ColNum,
         button: &Button,
-        x_offset: u32,
-        y_offset: u32,
+        x_offset: i32,
+        y_offset: i32,
     ) -> Result<&mut Worksheet, XlsxError> {
         // Check row and columns are in the allowed range.
         if !self.check_dimensions_only(row, col) {
@@ -17089,8 +17089,8 @@ impl Worksheet {
         let mut row_start: RowNum = row; // Row containing top left corner.
         let mut col_start: ColNum = col; // Column containing upper left corner.
 
-        let mut x1: u32 = object.x_offset(); // Distance to left side of object.
-        let mut y1: u32 = object.y_offset(); // Distance to top of object.
+        let mut x1: i32 = object.x_offset(); // Distance to left side of object.
+        let mut y1: i32 = object.y_offset(); // Distance to top of object.
 
         let mut row_end: RowNum; // Row containing bottom right corner.
         let mut col_end: ColNum; // Column containing lower right corner.
@@ -17101,26 +17101,26 @@ impl Worksheet {
         let width = object.width_scaled(); // Width of object frame.
         let height = object.height_scaled(); // Height of object frame.
 
-        let mut x_abs: u32 = 0; // Absolute distance to left side of object.
-        let mut y_abs: u32 = 0; // Absolute distance to top  side of object.
+        let mut x_abs: i32 = 0; // Absolute distance to left side of object.
+        let mut y_abs: i32 = 0; // Absolute distance to top  side of object.
 
         // Calculate the absolute x offset of the top-left vertex.
         for col in 0..col_start {
-            x_abs += self.column_pixel_width(col, object.object_movement());
+            x_abs += self.column_pixel_width(col, object.object_movement()) as i32;
         }
         x_abs += x1;
 
         // Calculate the absolute y offset of the top-left vertex.
         for row in 0..row_start {
-            y_abs += self.row_pixel_height(row, object.object_movement());
+            y_abs += self.row_pixel_height(row, object.object_movement()) as i32;
         }
         y_abs += y1;
 
         // Adjust start col for offsets that are greater than the col width.
         loop {
             let col_size = self.column_pixel_width(col_start, object.object_movement());
-            if x1 >= col_size {
-                x1 -= col_size;
+            if x1 >= col_size as i32 {
+                x1 -= col_size as i32;
                 col_start += 1;
             } else {
                 break;
@@ -17130,8 +17130,8 @@ impl Worksheet {
         // Adjust start row for offsets that are greater than the row height.
         loop {
             let row_size = self.row_pixel_height(row_start, object.object_movement());
-            if y1 >= row_size {
-                y1 -= row_size;
+            if y1 >= row_size as i32 {
+                y1 -= row_size as i32;
                 row_start += 1;
             } else {
                 break;
@@ -17186,8 +17186,8 @@ impl Worksheet {
         DrawingInfo {
             from,
             to,
-            col_absolute: u64::from(x_abs),
-            row_absolute: u64::from(y_abs),
+            col_absolute: x_abs.max(0) as u64,
+            row_absolute: y_abs.max(0) as u64,
             width,
             height,
             name: object.name(),
