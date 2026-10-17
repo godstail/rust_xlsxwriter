@@ -5857,6 +5857,38 @@ impl Worksheet {
         col: ColNum,
         note: &Note,
     ) -> Result<&mut Worksheet, XlsxError> {
+        self.insert_note_with_offset(row, col, note, None, None)?;
+        Ok(self)
+    }
+
+    /// Add a Note to a cell at an offset.
+    ///
+    /// Add a [`Note`] to a worksheet at a pixel offset within a cell
+    /// location. See [`Worksheet::insert_note()`] above
+    ///
+    /// # Parameters
+    ///
+    /// - `row`: The zero indexed row number.
+    /// - `col`: The zero indexed column number.
+    /// - `note`: The [`Note`] to insert into the cell.
+    /// - `x_offset`: The horizontal offset within the cell in pixels.
+    /// - `y_offset`: The vertical offset within the cell in pixels.
+    ///
+    /// # Errors
+    ///
+    /// - [`XlsxError::RowColumnLimitError`] - Row or column exceeds Excel's
+    ///   worksheet limits.
+    /// - [`XlsxError::MaxStringLengthExceeded`] - Text exceeds Excel's limit of
+    ///   32,713 characters.
+    ///
+    pub fn insert_note_with_offset(
+        &mut self,
+        row: RowNum,
+        col: ColNum,
+        note: &Note,
+        x_offset: u32,
+        y_offset: u32,
+    ) -> Result<&mut Worksheet, XlsxError> {
         // Check row and columns are in the allowed range.
         if !self.check_dimensions(row, col) {
             return Err(XlsxError::RowColumnLimitError);
@@ -5873,6 +5905,8 @@ impl Worksheet {
         let mut note = note.clone();
         note.cell_row = row;
         note.cell_col = col;
+        note.x_offset = Some(x_offset);
+        note.y_offset = Some(y_offset);
 
         // Store the note in a structure similar to the worksheet data table
         // since notes also affect the calculation of <row> span attributes.
